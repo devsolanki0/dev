@@ -1,0 +1,92 @@
+main.py
+
+from fruit_manager import FruitManager
+
+def display_menu():
+    print("WELCOME TO FRUIT MARKET")
+    print("1) Manager")
+    print("2) Customer")
+    print("3) Exit")
+
+def main():
+    fruit_manager = FruitManager()
+    while True:
+        display_menu()
+        role = input("Select your Role: ")
+        if role == '1':
+            fruit_manager.manager_menu()
+        elif role == '2':
+            print("Customer functionality not implemented yet.")
+        elif role == '3':
+            print("Exiting the application. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
+
+............
+
+
+fruit_manager.py
+
+import json
+import logging
+
+logging.basicConfig(filename='fruit_market.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+
+class FruitManager:
+    def __init__(self):
+        self.stock = {}
+
+    def manager_menu(self):
+        while True:
+            print("\nFruit Market Manager")
+            print("1) Add Fruit Stock")
+            print("2) View Fruit Stock")
+            print("3) Update Fruit Stock")
+            print("4) Back to Main Menu")
+            choice = input("Enter your choice: ")
+            if choice == '1':
+                self.add_fruit_stock()
+            elif choice == '2':
+                self.view_fruit_stock()
+            elif choice == '3':
+                self.update_fruit_stock()
+            elif choice == '4':
+                break
+            else:
+                print("Invalid choice. Please try again.")
+
+    def add_fruit_stock(self):
+        fruit_name = input("Enter fruit Name: ")
+        qty = input("Enter qty (in kg): ")
+        price = input("Enter price: ")
+        self.stock[fruit_name] = {"qty": qty, "price": price}
+        logging.info(f"Added {fruit_name} to stock: {self.stock[fruit_name]}")
+        print(f"{fruit_name} added to stock.")
+        self.ask_for_more_operations()
+
+    def view_fruit_stock(self):
+        print("\nCurrent Fruit Stock:")
+        print(json.dumps(self.stock, indent=4))
+        logging.info("Viewed fruit stock.")
+        self.ask_for_more_operations()
+
+    def update_fruit_stock(self):
+        fruit_name = input("Enter fruit Name to update: ")
+        if fruit_name in self.stock:
+            qty = input("Enter new qty (in kg): ")
+            price = input("Enter new price: ")
+            self.stock[fruit_name] = {"qty": qty, "price": price}
+            logging.info(f"Updated {fruit_name} in stock: {self.stock[fruit_name]}")
+            print(f"{fruit_name} updated in stock.")
+        else:
+            print(f"{fruit_name} not found in stock.")
+        self.ask_for_more_operations()
+
+    def ask_for_more_operations(self):
+        more = input("Do you want to perform more operations? (y/n): ")
+        if more.lower() != 'y':
+            self.manager_menu()
